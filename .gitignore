@@ -1,0 +1,7 @@
+*.pyc
+*.ipynb
+*.log
+*.db
+*.hd5
+*.tex
+.ipynb_checkpoints
