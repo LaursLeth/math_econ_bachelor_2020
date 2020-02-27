@@ -4,4 +4,15 @@
 *.db
 *.hd5
 *.tex
+/Assignment/logos/*
+/Assignment/forside/*
+/Assignment/figures/*
+*.bib
+*.sty
+*.aux
+*.bbl
+*.blg
+*.out
+*.gz
+*.thm
 .ipynb_checkpoints
