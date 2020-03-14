@@ -16,3 +16,8 @@
 *.gz
 *.thm
 .ipynb_checkpoints
+*.png
+*.jpg
+*.snm
+*.toc
+*.nav
