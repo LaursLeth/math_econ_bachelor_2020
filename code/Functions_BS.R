@@ -13,6 +13,7 @@ d2 <- function(S,K,r,q,sigma,tau){
 }
 
 
+# Black-Scholes Price function
 C <- function(S,K,r,q,sigma,tau,option="Call"){
   d1 <- d1(S,K,r,q,sigma,tau)
   d2 <- d2(S,K,r,q,sigma,tau)
@@ -28,6 +29,7 @@ C <- function(S,K,r,q,sigma,tau,option="Call"){
 }
 C <- Vectorize(C)
 
+# Black-Scholes Delta
 BS.Delta <- function(S,K,r,q,sigma,tau,option="Call"){
   
   if (option == "Call"){
@@ -43,6 +45,24 @@ BS.Delta <- function(S,K,r,q,sigma,tau,option="Call"){
 
 BS.Delta <- Vectorize(BS.Delta)
 
+# Implied volatility in Black-Scholes model
+
+V.BS <- function(S,K,r,q,sigma,tau,option="Call"){
+  valuehigh <- 100*S
+  valuelow <- 0
+  diff <- 10
+  while (diff > 0.000001){
+    valuemid <- 0.5*(valuehigh + valuelow)
+    S.hat <- C(valuemid,K,r,q,sigma,tau,option="Call")
+    diff <- abs(S-S.hat)
+    if (S.hat > S){
+      valuehigh <- valuemid
+    }else{
+      valuelow <- valuemid	
+    }
+  }
+  valuemid
+}
 
 
 
