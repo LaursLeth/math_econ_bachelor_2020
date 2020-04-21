@@ -62,29 +62,44 @@ K <- 100 # Initially at-the-money
 T <- 1
 
 # Time grid
-N <- 10000
+N <- 1000
 t <- seq(0,T,length=N+1) # N intervals
 tau <- T -t 
 dt <- 1/N   # Equidistant time step for each simulated path
 
 # Simulate S under P
+set.seed(321)
 Z <- rnorm(N, mean=0, sd=1) 
 X <- cumsum((mu-1/2*sigma^2)*dt + sigma*sqrt(dt)*Z)
 S <- c(S0,S0*exp(X))
 
 call_prices <- C(S=S, K=K, r=r,q=q, sigma=sigma,tau=tau)
+delta <- BS.Delta(S=S, K=K, r=r,q=q, sigma=sigma,tau=tau)
 
-df <- data.frame(time=t, spot=S, call=call_prices)
+df <- data.frame(time=t, spot=S, call=call_prices, delta=delta)
 
 df_melt <- melt(df, id = "time", measure.vars = c("spot", "call"))
 
 
 ggplot(data=df_melt, aes(x=time, y=value, color=variable)) + 
   geom_line(size=1) +
+  geom_hline(aes(yintercept=K)) +
+  geom_hline(aes(yintercept=0)) +
   xlab("time") +
   ylab("Value") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle("Contract Function for European call vs. Price")+
+  ggtitle("Spot Price vs. Call Price")+
+  theme(plot.title = element_text(lineheight=0.8) # face="bold"
+        ,axis.text.x = element_text(angle = 0, hjust = 1,vjust=1))
+
+
+ggplot(data=df, aes(x=time, y=delta)) + 
+  geom_line(size=1) +
+  xlab("time") +
+  ylab("Value") +
+  ylim(c(0,1)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  ggtitle("Delta")+
   theme(plot.title = element_text(lineheight=0.8) # face="bold"
         ,axis.text.x = element_text(angle = 0, hjust = 1,vjust=1))
 
@@ -138,7 +153,7 @@ ggplot(data=df_melt, aes(x=time, y=value, color=variable)) +
   xlab("time") +
   ylab("Value") +
   theme(plot.title = element_text(hjust = 0.5)) +
-  ggtitle("European Call Price vs. Value Process for Strategy")+
+  ggtitle("Hedging Error")+
   theme(plot.title = element_text(lineheight=0.8) # face="bold"
         ,axis.text.x = element_text(angle = 0, hjust = 1,vjust=1))
 
