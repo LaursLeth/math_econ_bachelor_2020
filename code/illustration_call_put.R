@@ -78,3 +78,36 @@ ggplot(data=df_melt_2, aes(x=S, y=value, color=variable)) +
   ggtitle("Contract Function for European call vs. Price")+
   theme(plot.title = element_text(lineheight=0.8) # face="bold"
         ,axis.text.x = element_text(angle = 0, hjust = 1,vjust=1))
+
+C(S=110, K=K, r=r, q=0, sigma=sigma, tau=tau)
+
+# Monte Carlo
+
+N <- 10000     # Numer of simulations (simulated payoffs)
+m <- 1000     # Number of evaluations for each simulated path
+tau <- T -t 
+dt <- tau/(m)   # Equidistant time step for each simulated path
+
+ # Vector to save simulated payoffs
+S0 <- c(90,100,110)
+call_prices <- numeric(length(S0))
+for (j in 1:length(S0)){
+  
+  payoff_vec <- numeric(N)
+  for (i in 1:N){
+    # Simulate under Q-measure (Q-dynamics)
+    Z <- rnorm(m, mean=0, sd=1) 
+    X <- cumsum((r-1/2*sigma^2)*dt + sigma*sqrt(dt)*Z)
+    S <- c(S0[j],S0[j]*exp(X))
+    
+    # Compute simulated payoff at time T
+    payoff_vec[i] <- max(S[m+1]-K, 0)
+  }
+  call_prices[j] <- mean(payoff_vec)
+}
+exp(-r*tau)* call_prices
+
+# Discount average and get Monte Carlo price
+price_mc <- exp(-r*tau)*mean(payoff_vec)
+price_mc
+exp(-r*tau)
