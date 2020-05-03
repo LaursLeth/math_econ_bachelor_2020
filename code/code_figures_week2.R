@@ -17,21 +17,8 @@ plot(df_stock$Close)
 df_stock <- df_stock[, c('Date', 'Close')]
 head(df_stock)
 
-r <- diff(log(df_stock$Close))
-sd(r)*sqrt(252)
-0.05*252
-0.05/sd(r)
-pnorm(-12.6, sd=0.2)
-1/((1-pnorm(0.05,mean=0, sd=sd(r)))*252*2)
-
-1/(pnorm(-0.05,mean=0, sd=sd(r))) * 
-1/(252*60)
-#df_stock_returns <- data.frame(Date = df_stock$Da)
-
-
 dummy_start <- which(df_stock$Date == '2003-12-31') + 1
 df_stock <- df_stock[dummy_start:nrow(df_stock), ]
-
 
 
 years <- as.character(2004:2019)
@@ -61,17 +48,12 @@ a <- a+1
 length(a)
 b_col <- rep(1,nrow(df_stock))
 b_col[a] <- 2
-1/pnorm(-0.8, mean=0, sd=0.2)/252
-pnsd(r)
-0.2/sqrt(252) * 4
-sd(r)
-0.2/sqrt(252)
-1/(2*pnorm(-0.2/sqrt(252) * 4, mean=0, sd=0.2/sqrt(252)))/252
+
 b_size <- rep(0.5,nrow(df_stock))
 b_size[a] <- 2
 
 df_stock$panel <- "Daily Closing Values"
-df_stock_returns$panel <- "Daily Log-Returns"
+
 
 p1 <- ggplot(data=df_stock,aes(x=1:nrow(df_stock),y=Close)) + geom_point(size=b_size,colour=b_col) +
   scale_x_continuous(breaks=breakVec,labels=labelVec) +
@@ -85,11 +67,16 @@ p1 <- ggplot(data=df_stock,aes(x=1:nrow(df_stock),y=Close)) + geom_point(size=b_
 
 p1
 
+
 # Daily log-returns
+df_stock_returns <- data.frame(Date = df_stock$Date[-1], Close = diff(log(df_stock$Close)))
+df_stock_returns$x <- df_stock_returns$Close/sd(df_stock_returns$Close) # Standardized log-returns
+
 breakVec_returns <- breakVec -1
 breakVec_returns[1] <- 1
 labelVec_returns <- as.character(df_stock_returns[breakVec_returns,]$Date)
 
+df_stock_returns$panel <- "Daily Log-Returns"
 p2 <- ggplot(data=df_stock_returns,aes(x=1:nrow(df_stock_returns),y=Close)) + geom_point(size=1) +
   scale_x_continuous(breaks=breakVec_returns,labels=labelVec_returns) +
   theme(plot.title = element_text(hjust = 0.5)) +
@@ -102,8 +89,7 @@ p2 <- ggplot(data=df_stock_returns,aes(x=1:nrow(df_stock_returns),y=Close)) + ge
 p2
 
 # Histogram of log-returns
-df_stock_returns <- data.frame(Date = df_stock$Date[-1], Close = diff(log(df_stock$Close)))
-df_stock_returns$x <- df_stock_returns$Close/sd(df_stock_returns$Close)
+
 
 p_hist <- ggplot(data=df_stock_returns,aes(x=x)) + 
   geom_histogram(aes(y = ..density..), binwidth=0.1, position="identity",alpha=.5,color="black") +
