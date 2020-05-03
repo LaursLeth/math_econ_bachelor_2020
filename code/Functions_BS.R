@@ -79,11 +79,12 @@ delta_hedge_error <- function(S,K,r,q,sigma, tau, call_price, strategy=-1,option
   if (length(q)==1){q<-rep(q,n)}
   
   for (i in 1:n){
+    dt      <- tau[i] - tau[i+1] 
     B       <- Pi[i] + strategy*delta[i]*S[i] - strategy*call_price[i] # Rebalance with money account
     V[i+1] <- exp(r[i]*dt)*B - strategy*delta[i]*exp(q[i]*dt)*S[i+1] # Mark-to-market for portfolio
     Pi[i+1] <- V[i+1] + strategy*call_price[i+1] # Mark-to-market for adjusted portfolio/cumulated hedging error
     dPi[i+1] <- Pi[i+1] - Pi[i] # 
   }
-  output=list(pf_value= V, error_cum = Pi, error_dt = dPi) # Save output
+  output=list(pf_value= V, error_cum = Pi, error_dt = dPi, delta=delta) # Save output
 }
 
