@@ -17,6 +17,15 @@ plot(df_stock$Close)
 df_stock <- df_stock[, c('Date', 'Close')]
 head(df_stock)
 
+r <- diff(log(df_stock$Close))
+sd(r)*sqrt(252)
+0.05*252
+0.05/sd(r)
+pnorm(-12.6, sd=0.2)
+1/((1-pnorm(0.05,mean=0, sd=sd(r)))*252*2)
+
+1/(pnorm(-0.05,mean=0, sd=sd(r))) * 
+1/(252*60)
 #df_stock_returns <- data.frame(Date = df_stock$Da)
 
 
@@ -52,7 +61,12 @@ a <- a+1
 length(a)
 b_col <- rep(1,nrow(df_stock))
 b_col[a] <- 2
-
+1/pnorm(-0.8, mean=0, sd=0.2)/252
+pnsd(r)
+0.2/sqrt(252) * 4
+sd(r)
+0.2/sqrt(252)
+1/(2*pnorm(-0.2/sqrt(252) * 4, mean=0, sd=0.2/sqrt(252)))/252
 b_size <- rep(0.5,nrow(df_stock))
 b_size[a] <- 2
 
